@@ -15,5 +15,7 @@
       "direction": "out",
       "name": "res"
     }
-  ]
+  ],
+  "scriptFile": "../createTaskTrigger/index.js",
+  "entryPoint": "default"
 }
