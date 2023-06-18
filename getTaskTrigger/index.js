@@ -6,9 +6,9 @@ var config =
     host: process.env["MYSQL_HOST"],
     user: process.env["MYSQL_USER"],
     password: process.env["MYSQL_PASSWORD"],
-    database: 'quickstartdb',
+    database: process.env["MYSQL_DB"],
     port: 3306,
-    ssl: {ca: fs.readFileSync("your_path_to_ca_cert_file_DigiCertGlobalRootCA.crt.pem")}
+    // ssl: {ca: fs.readFileSync("./DigiCertGlobalRootCA.crt.pem")}
 };
 
 const conn = new mysql.createConnection(config);
@@ -26,7 +26,7 @@ conn.connect(
     });
 
 function readData(user_id){
-    conn.query('SELECT id, task, status, user_id FROM tasks WHERE id = ?', [user_id], 
+    conn.query('SELECT id, task, status, user_id FROM tasks WHERE id = ?;', [user_id], 
         function (err, results, fields) {
             if (err) throw err;
             else console.log('Selected ' + results.length + ' row(s).');

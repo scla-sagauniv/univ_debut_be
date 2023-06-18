@@ -16,6 +16,6 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../getTaskTrigger/index.js",
+  "scriptFile": "../createTaskTrigger/index.js",
   "entryPoint": "default"
 }
