@@ -10,55 +10,34 @@ module.exports = async function (context, req) {
         // status: 200, /* Defaults to 200 */
         body: responseMessage
     };
+    const mysql = require('mysql2');
+    const fs = require('fs');
+
+    
+    var config =
+    {
+        host: process.env["MYSQL_HOST"],
+        user: process.env["MYSQL_USER"],
+        password: process.env["MYSQL_PASSWORD"],
+        database: process.env["MYSQL_DB"],
+        port: 3306,
+        ssl: {ca: fs.readFileSync("DigiCertGlobalRootCA.crt.pem")}
+    };
+    console.log(config);
+    //ここまで接続
+    const conn = await mysql.createConnection(config);
+    //ここからクエリ
+    const query = 'INSERT INTO tasks (id,task, status, user_id) VALUES ?';
+    const values = tasks.map(task => [id,task,status,user_id]);
+    conn.query(query, [values], (err, result) => {
+    if (err) throw new Error('データの登録に失敗しました');
+    console.log('タスクが正常に挿入されました');
+    });
+    const query2 = 'INSERT INTO task_contents (id,task, quo,issue,hypo,result) VALUES ?';
+    const values2 = task_contents.map(task => [id, task, status, user_id]);
+    conn.query(query2, [values2], (err, result) => {
+        if (err) throw new Error('データの登録に失敗しました');
+        console.log('タスクが正常に挿入されました');
+
+});
 }
-
-// const mysql = require('mysql');
-// const fs = require('fs');
-// exports.__esModule = true;
-
-// var config =
-// {
-//     host: process.env["MYSQL_HOST"],
-//     user: process.env["MYSQL_USER"],
-//     password: process.env["MYSQL_PASSWORD"],
-//     database: process.env["MYSQL_DB"],
-//     port: 3306,
-//     // ssl: {ca: fs.readFileSync("./DigiCertGlobalRootCA.crt.pem")}
-// };
-
-// const conn = new mysql.createConnection(config);
-
-// conn.connect(
-//     function (err) { 
-//     if (err) { 
-//         console.log("!!! Cannot connect !!! Error:");
-//         throw err;
-//     }
-//     else
-//     {
-//        console.log("Connection established.");
-//            queryDatabase();
-//     }
-// });
-
-// module.exports = function queryDatabase(){
-//     conn.query('INSERT INTO inventory (task,status) VALUES (?, ?);', ['banana', "container1"], 
-//             function (err, results, fields) {
-//                 if (err) throw err;
-//         else console.log('Inserted ' + results.affectedRows + ' row(s).');
-//         })
-//     conn.query('INSERT INTO inventory (task,status) VALUES (?, ?);', ['apple', "container2"], 
-//         function (err, results, fields) {
-//                 if (err) throw err;
-//         console.log('Inserted ' + results.affectedRows + ' row(s).');
-//         })
-//     conn.query('INSERT INTO inventory (task,status) VALUES (?, ?);', ['orange', "container3"],  
-//         function (err, results, fields) {
-//                 if (err) throw err;
-//         console.log('Inserted ' + results.affectedRows + ' row(s).');
-//         })
-//     conn.end(function (err) { 
-//     if (err) throw err;
-//     else  console.log('Done.') 
-//     });
-// };
