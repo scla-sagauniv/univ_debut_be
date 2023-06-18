@@ -1,4 +1,4 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const fs = require('fs');
 
 var config =
@@ -19,15 +19,25 @@ module.exports = async function (context, req) {
     const user_id = (req.query.user_id);
 
     const conn = await mysql.createConnection(config);
-    const [rows, fields] = await conn.query('SELECT * FROM tasks WHERE user_id = ?;', [user_id]);
+    const ins = async() => {
+
+        await conn.query('INSERT INTO tasks (task, status) VALUES (?, ?);', ['mysql','container1'])
+        await conn.query('INSERT INTO tasks (task, status) VALUES (?, ?);', ['css','container1'])
+        await conn.query('INSERT INTO tasks (task, status) VALUES (?, ?);', ['html','container1'])
+        await conn.query('INSERT INTO tasks (task, status) VALUES (?, ?);', ['node','container1'])
+    }
+    ins();
+    const [rows, fields] = await conn.query('SELECT * FROM tasks WHERE user_id = ?;', 1);
 
     const tasks = rows.map(row => {
         return {
             id: row.id,
-            title: row.title,
-            container: row.container
+            title: row.task,
+            container: row.status
         };
     });
+
+    console.log(tasks);
     
     context.res = {
         status: 200,
